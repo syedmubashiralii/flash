@@ -344,6 +344,7 @@ class FlashBar<T> extends StatefulWidget {
   const FlashBar({
     super.key,
     required this.controller,
+    this.width= 524,
     this.position = FlashPosition.bottom,
     this.behavior = FlashBehavior.fixed,
     this.dismissDirections = FlashDismissDirection.values,
@@ -376,6 +377,8 @@ class FlashBar<T> extends StatefulWidget {
     this.useSafeArea = true,
     this.builder,
   });
+
+  final double width;
 
   final FlashController<T> controller;
 
@@ -543,33 +546,36 @@ class _FlashBarState extends State<FlashBar> with SingleTickerProviderStateMixin
     final titleTextStyle = widget.titleTextStyle ?? barTheme?.titleTextStyle ?? defaults.titleTextStyle!;
     final contentTextStyle = widget.contentTextStyle ?? barTheme?.contentTextStyle ?? defaults.contentTextStyle!;
     final iconColor = widget.iconColor ?? barTheme?.iconColor ?? defaults.iconColor;
-    Widget child = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.showProgressIndicator)
-          if (widget.progressIndicatorValue == null)
-            LinearProgressIndicator(
-              backgroundColor: widget.progressIndicatorBackgroundColor,
-              valueColor: widget.progressIndicatorValueColor,
-            )
-          else
-            AnimatedBuilder(
-              animation: widget.progressIndicatorValue!,
-              builder: (context, child) {
-                return LinearProgressIndicator(
-                  value: widget.progressIndicatorValue!.value,
-                  backgroundColor: widget.progressIndicatorBackgroundColor,
-                  valueColor: widget.progressIndicatorValueColor,
-                );
-              },
+    Widget child = Container(
+      width: widget.width,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.showProgressIndicator)
+            if (widget.progressIndicatorValue == null)
+              LinearProgressIndicator(
+                backgroundColor: widget.progressIndicatorBackgroundColor,
+                valueColor: widget.progressIndicatorValueColor,
+              )
+            else
+              AnimatedBuilder(
+                animation: widget.progressIndicatorValue!,
+                builder: (context, child) {
+                  return LinearProgressIndicator(
+                    value: widget.progressIndicatorValue!.value,
+                    backgroundColor: widget.progressIndicatorBackgroundColor,
+                    valueColor: widget.progressIndicatorValueColor,
+                  );
+                },
+              ),
+          IntrinsicHeight(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: _getAppropriateRowLayout(titleTextStyle, contentTextStyle, iconColor, padding),
             ),
-        IntrinsicHeight(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: _getAppropriateRowLayout(titleTextStyle, contentTextStyle, iconColor, padding),
           ),
-        ),
-      ],
+        ],
+      ),
     );
 
     if (behavior == FlashBehavior.fixed) {
