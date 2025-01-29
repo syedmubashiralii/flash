@@ -14,6 +14,7 @@ abstract class FlashController<T> {
   void deactivate();
 }
 
+
 Future<T?> showFlash<T>({
   required BuildContext context,
   required FlashBuilder<T> builder,
